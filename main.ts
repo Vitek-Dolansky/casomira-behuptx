@@ -1,4 +1,3 @@
-
 radio.setGroup(73)
 
 Sensors.SetLightLevel()
