@@ -1,34 +1,30 @@
 radio.setGroup(73)
 
+let start: boolean = false
+
 Sensors.SetLightLevel()
 input.onButtonPressed(Button.A, function() {
     Sensors.SetLightLevel()
 })
 
-let start: boolean = false
-
 Sensors.OnLightDrop(function() {
     if (start === false) {
-        radio.sendValue ("konec", 2) // konec = 2, zrušeno = 0
+        radio.sendNumber(1) // konec = 2, start = 1, zrušeno = 0
     }
 })
 
-radio.onReceivedValue
+//radio.onReceivedNumber(function(receivedNumber: number) {
+   // whaleysans.showNumber(input.runningTime())
+//})
 
 
+radio.onReceivedValue(function(name: string, value: number) {
+    music.playTone(440, 500)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    if (name === "endTime") {
+     basic.showNumber(value)
+    }
+})
 
 
 
