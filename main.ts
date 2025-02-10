@@ -1,16 +1,15 @@
 radio.setGroup(73)
 
-let start: boolean = false
-
+enum State {Ready, Running, Finnish}
+let akce = State.Ready
 Sensors.SetLightLevel()
-input.onButtonPressed(Button.A, function() {
-    Sensors.SetLightLevel()
-})
 
 Sensors.OnLightDrop(function() {
-    if (start === false) {
-        radio.sendNumber(1) // konec = 2, start = 1, zrušeno = 0
+    if (akce === State.Ready) {
+        radio.sendNumber(1) // konec = 2, start = 1
+        akce = State.Running
     }
+
 })
 
 //radio.onReceivedNumber(function(receivedNumber: number) {
@@ -19,10 +18,16 @@ Sensors.OnLightDrop(function() {
 
 
 radio.onReceivedValue(function(name: string, value: number) {
-    music.playTone(440, 500)
+ music.playTone(440, 500)
 
-    if (name === "endTime") {
+    if (name === "endTime" && akce === State.Running) {
      basic.showNumber(value)
+     music.play(music.tonePlayable(Note.C, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+     akce = State.Finnish
+    }
+
+    if (akce === State.Finnish) {
+        akce = State.Ready
     }
 })
 
